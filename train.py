@@ -31,7 +31,7 @@ import random
 from docopt import docopt
 from tensorflow.python import keras
 from tensorflow.python.keras.models import Model
-from tensorflow.python.keras.layers import Input, Dense, Convolution2D, Dropout, Flatten
+from tensorflow.python.keras.layers import Input, Dense, Convolution2D, Dropout, SpatialDropout2D, Flatten
 from PIL import Image
 import matplotlib.pyplot as plt
 
@@ -45,15 +45,15 @@ def create_model(num_outputs, input_shape=(120, 160, 3), drop=0.2):
     img_in = Input(shape=input_shape, name='img_in')
     x = img_in
     x = Convolution2D(24, (5,5), strides=(2,2), activation='relu', name="conv2d_1")(x)
-    x = Dropout(drop)(x)
+    x = SpatialDropout2D(drop)(x)
     x = Convolution2D(32, (5,5), strides=(1,1), activation='relu', name="conv2d_2")(x)
-    x = Dropout(drop)(x)
+    x = SpatialDropout2D(drop)(x)
     x = Convolution2D(64, (5,5), strides=(1,1), activation='relu', name="conv2d_3")(x)
-    x = Dropout(drop)(x)
+    x = SpatialDropout2D(drop)(x)
     x = Convolution2D(64, (3,3), strides=(1,1), activation='relu', name="conv2d_4")(x)
-    x = Dropout(drop)(x)
+    x = SpatialDropout2D(drop)(x)
     x = Convolution2D(64, (3,3), strides=(1,1), activation='relu', name="conv2d_5")(x)
-    x = Dropout(drop)(x)
+    x = SpatialDropout2D(drop)(x)
     
     x = Flatten(name='flattened')(x)
     x = Dense(100, activation='relu')(x)
@@ -168,14 +168,14 @@ def go(file_mask, model_path):
         return
 
     #hyper-params
-    batch_size = 128
+    batch_size = 64
     sample_shape = (32, 32, 3)
     img_shape = (32, 64, 3)
     num_cat = 8
-    epochs = 100
+    epochs = 10
     rate = 0.001
     decay = 0.0001
-    drop = 0.3
+    drop = 0.1
     train_perc = 0.8
 
     #shuffle list and split into two groups
