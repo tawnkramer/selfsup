@@ -118,6 +118,6 @@ if __name__ == "__main__":
     files = args['--files']
     model = args['--model']
     if files is None:
-        files = "data\**\*.jpg"
+        files = "data/**/*.jpg"
     get_data_if_needed()
     go(files, model)
