@@ -17,7 +17,7 @@ other task you need that will then require fewer examples.
 > --files=data/**/*.jpg
 
 Usage:
-    train.py (--files=<file_mask> ...) (--model=<model>)
+    train.py [--files=<file_mask>] (--model=<model>)
 
 Options:
     -h --help        Show this screen.
@@ -36,11 +36,22 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
+def get_data_if_needed():
+    """
+    If no data dir, then go get some...
+    """
+    url = "https://tawn-train.s3.amazonaws.com/face_cars_dataset/data.zip"
+    if not os.path.exists("data"):
+        print('downloading large dataset (1GB)')
+        os.system('wget %s' % url)
+        os.system('unzip data.zip')
+        os.unlink('data.zip')
+
 
 def create_model(num_outputs, input_shape=(120, 160, 3), drop=0.2):
-    '''
+    """
     defined the NN layers for this model.
-    '''
+    """
 
     img_in = Input(shape=input_shape, name='img_in')
     x = img_in
@@ -69,11 +80,11 @@ def create_model(num_outputs, input_shape=(120, 160, 3), drop=0.2):
 
 
 def generator(file_list, sample_shape, batch_size):
-    '''
+    """
     choose a central patch of sample_shape, then choose another patch in a random
     dir in 8 cardinal directions. Append the two patches together in a single image
     with the label of the dir choice.
-    '''
+    """
     list_size = len(file_list)
     iImage = 0
     dp = 10 # deviation_pixels
@@ -156,10 +167,10 @@ def generator(file_list, sample_shape, batch_size):
 
 
 def go(file_mask, model_path):
-    '''
+    """
     gather a bunch of images, pass them to our training,
     show a graph of results.
-    '''
+    """
     print("gathering files", file_mask)
     file_list = glob.glob(file_mask, recursive=True)    
     num_files = len(file_list)
@@ -233,4 +244,7 @@ if __name__ == "__main__":
     args = docopt(__doc__)    
     files = args['--files']
     model = args['--model']
-    go(files[0], model)
+    if files is None:
+        files = "data\**\*.jpg"
+    get_data_if_needed()
+    go(files, model)
