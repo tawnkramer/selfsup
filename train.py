@@ -30,6 +30,7 @@ from tensorflow.python import keras
 
 #training tasks
 from tasks.localize_patch import LocalizePatch
+from tasks.determine_rot import DetermineRot
 
 def get_data_if_needed():
     """
@@ -57,12 +58,13 @@ def go(file_mask, model_path):
 
     #hyper-params
     batch_size = 64
-    epochs = 10
+    epochs = 100
     rate = 0.001
     decay = 0.0001
     train_perc = 0.8
 
-    task = LocalizePatch()
+    #task = LocalizePatch()
+    task = DetermineRot()
 
     #shuffle list and split into two groups
     random.shuffle(file_list)
