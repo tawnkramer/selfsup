@@ -31,6 +31,9 @@ from tensorflow.python import keras
 #training tasks
 from tasks.localize_patch import LocalizePatch
 from tasks.determine_rot import DetermineRot
+from tasks.colorize import Colorize
+from tasks.auto_encoder import AutoEncoder
+
 
 def get_data_if_needed():
     """
@@ -64,7 +67,9 @@ def go(file_mask, model_path):
     train_perc = 0.8
 
     #task = LocalizePatch()
-    task = DetermineRot()
+    #task = DetermineRot()
+    #task = Colorize()
+    task = AutoEncoder()
 
     #shuffle list and split into two groups
     random.shuffle(file_list)
